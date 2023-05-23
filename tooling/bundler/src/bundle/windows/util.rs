@@ -176,7 +176,7 @@ pub fn os_bitness<'a>() -> Option<&'a str> {
   unsafe { GetNativeSystemInfo(&mut system_info) };
   match unsafe { system_info.Anonymous.Anonymous.wProcessorArchitecture } {
     PROCESSOR_ARCHITECTURE_INTEL => Some("x86"),
-    PROCESSOR_ARCHITECTURE_AMD64 => Some("x64"),
+    PROCESSOR_ARCHITECTURE_AMD64 => Some("x86"), // Use x86 version of signtool even on AMD64
     _ => None,
   }
 }
