@@ -124,9 +124,7 @@ pub fn sign_command(path: &str, params: &SignParams) -> crate::Result<(Command, 
     }
   }
 
-  for arg in &params.args {
-    cmd.arg(arg);
-  }
+  cmd.args(&params.args);
 
   cmd.arg(path);
 
