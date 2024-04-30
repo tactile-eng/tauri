@@ -124,7 +124,7 @@ pub fn sign_command(path: &str, params: &SignParams) -> crate::Result<(Command, 
     }
   }
 
-  for arg of &params.args {
+  for arg in &params.args {
     cmd.arg(arg);
   }
 
@@ -136,7 +136,7 @@ pub fn sign_command(path: &str, params: &SignParams) -> crate::Result<(Command, 
 pub fn sign<P: AsRef<Path>>(path: P, params: &SignParams) -> crate::Result<()> {
   let path_str = path.as_ref().to_str().unwrap();
 
-  info!(action = "Signing"; "{} with identity \"{}\"", path_str, params.certificate_thumbprint);
+  info!(action = "Signing"; "{} with identity {:?}", path_str, params.certificate_thumbprint);
 
   let (mut cmd, signtool) = sign_command(path_str, params)?;
   debug!("Running signtool {:?}", signtool);
