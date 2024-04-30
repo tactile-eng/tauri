@@ -611,6 +611,9 @@ pub struct WindowsConfig {
   /// use a TSP timestamp server, like e.g. SSL.com does. If so, enable TSP by setting to true.
   #[serde(default)]
   pub tsp: bool,
+  /// Arbitrary parameters for signtool.exe
+  #[serde(alias = "signtool-params")]
+  pub signtool_params: Option<Vec<String>>,
   /// The installation mode for the Webview2 runtime.
   #[serde(default, alias = "webview-install-mode")]
   pub webview_install_mode: WebviewInstallMode,
@@ -642,6 +645,7 @@ impl Default for WindowsConfig {
       certificate_thumbprint: None,
       timestamp_url: None,
       tsp: false,
+      signtool_params: None,
       webview_install_mode: Default::default(),
       webview_fixed_runtime_path: None,
       allow_downgrades: true,

@@ -20,9 +20,10 @@ use winreg::{
 pub struct SignParams {
   pub product_name: String,
   pub digest_algorithm: String,
-  pub certificate_thumbprint: String,
+  pub certificate_thumbprint: Option<String>,
   pub timestamp_url: Option<String>,
   pub tsp: bool,
+  pub args: Vec<String>,
 }
 
 // sign code forked from https://github.com/forbjok/rust-codesign
@@ -109,7 +110,9 @@ pub fn sign_command(path: &str, params: &SignParams) -> crate::Result<(Command, 
   let mut cmd = Command::new(&signtool);
   cmd.arg("sign");
   cmd.args(["/fd", &params.digest_algorithm]);
-  cmd.args(["/sha1", &params.certificate_thumbprint]);
+  if let Some(certificate_thumbprint) = &params.certificate_thumbprint {
+    cmd.args(["/sha1", certificate_thumbprint]);
+  }
   cmd.args(["/d", &params.product_name]);
 
   if let Some(ref timestamp_url) = params.timestamp_url {
@@ -121,6 +124,8 @@ pub fn sign_command(path: &str, params: &SignParams) -> crate::Result<(Command, 
     }
   }
 
+  cmd.args(&params.args);
+
   cmd.arg(path);
 
   Ok((cmd, signtool))
@@ -129,7 +134,7 @@ pub fn sign_command(path: &str, params: &SignParams) -> crate::Result<(Command, 
 pub fn sign<P: AsRef<Path>>(path: P, params: &SignParams) -> crate::Result<()> {
   let path_str = path.as_ref().to_str().unwrap();
 
-  info!(action = "Signing"; "{} with identity \"{}\"", path_str, params.certificate_thumbprint);
+  info!(action = "Signing"; "{} with identity {:?}", path_str, params.certificate_thumbprint);
 
   let (mut cmd, signtool) = sign_command(path_str, params)?;
   debug!("Running signtool {:?}", signtool);
@@ -145,7 +150,7 @@ pub fn sign<P: AsRef<Path>>(path: P, params: &SignParams) -> crate::Result<()> {
 
 impl Settings {
   pub(crate) fn can_sign(&self) -> bool {
-    self.windows().certificate_thumbprint.is_some()
+    self.windows().certificate_thumbprint.is_some() || self.windows().signtool_params.is_some()
   }
   pub(crate) fn sign_params(&self) -> SignParams {
     SignParams {
@@ -156,17 +161,14 @@ impl Settings {
         .as_ref()
         .map(|algorithm| algorithm.to_string())
         .unwrap_or_else(|| "sha256".to_string()),
-      certificate_thumbprint: self
-        .windows()
-        .certificate_thumbprint
-        .clone()
-        .unwrap_or_default(),
+      certificate_thumbprint: self.windows().certificate_thumbprint.clone(),
       timestamp_url: self
         .windows()
         .timestamp_url
         .as_ref()
         .map(|url| url.to_string()),
       tsp: self.windows().tsp,
+      args: self.windows().signtool_params.clone().unwrap_or_default(),
     }
   }
 }

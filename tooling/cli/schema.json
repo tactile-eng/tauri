@@ -150,6 +150,7 @@
             "certificateThumbprint": null,
             "digestAlgorithm": null,
             "nsis": null,
+            "signtoolParams": null,
             "timestampUrl": null,
             "tsp": false,
             "webviewFixedRuntimePath": null,
@@ -290,6 +291,7 @@
               "certificateThumbprint": null,
               "digestAlgorithm": null,
               "nsis": null,
+              "signtoolParams": null,
               "timestampUrl": null,
               "tsp": false,
               "webviewFixedRuntimePath": null,
@@ -1163,6 +1165,7 @@
             "certificateThumbprint": null,
             "digestAlgorithm": null,
             "nsis": null,
+            "signtoolParams": null,
             "timestampUrl": null,
             "tsp": false,
             "webviewFixedRuntimePath": null,
@@ -1434,6 +1437,16 @@
           "description": "Whether to use Time-Stamp Protocol (TSP, a.k.a. RFC 3161) for the timestamp server. Your code signing provider may use a TSP timestamp server, like e.g. SSL.com does. If so, enable TSP by setting to true.",
           "default": false,
           "type": "boolean"
+        },
+        "signtoolParams": {
+          "description": "Arbitrary parameters for signtool.exe",
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
         },
         "webviewInstallMode": {
           "description": "The installation mode for the Webview2 runtime.",

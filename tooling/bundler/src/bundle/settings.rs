@@ -337,6 +337,8 @@ pub struct WindowsSettings {
   /// Whether to use Time-Stamp Protocol (TSP, a.k.a. RFC 3161) for the timestamp server. Your code signing provider may
   /// use a TSP timestamp server, like e.g. SSL.com does. If so, enable TSP by setting to true.
   pub tsp: bool,
+  /// Arbitrary parameters for signtool.exe
+  pub signtool_params: Option<Vec<String>>,
   /// WiX configuration.
   pub wix: Option<WixSettings>,
   /// Nsis configuration.
@@ -366,6 +368,7 @@ impl Default for WindowsSettings {
       certificate_thumbprint: None,
       timestamp_url: None,
       tsp: false,
+      signtool_params: None,
       wix: None,
       nsis: None,
       icon_path: PathBuf::from("icons/icon.ico"),
